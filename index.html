@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Notes Sharing Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>📚 College Notes Platform</h2>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="upload.html" class="btn-primary">Upload Notes</a>
+                <a href="login.html" id="authLink">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Welcome to College Notes Platform</h1>
+            <p>Share and access study materials with your fellow students</p>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <!-- Section Header -->
+        <div class="section-header">
+            <h2>📖 All Notes</h2>
+            <p id="notesCount">Loading notes...</p>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading">
+            <p>⏳ Loading notes...</p>
+        </div>
+
+        <!-- Notes Grid - Cards will be inserted here by JavaScript -->
+        <div id="notesGrid" class="notes-grid">
+            <!-- Cards will be dynamically added here -->
+        </div>
+
+        <!-- Empty State - Shows when no notes exist -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <p>📚 No notes uploaded yet.</p>
+            <p>Be the first to share your notes!</p>
+            <a href="upload.html" class="btn-primary">Upload Notes</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Made with ❤️ by Students, for Students</p>
+    </footer>
+
+    <!-- Load Supabase JS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Load our JavaScript files -->
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/notes-list.js"></script>
+</body>
+
+</html>
