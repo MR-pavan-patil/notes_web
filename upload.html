@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Notes - College Notes Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>📚 College Notes Platform</h2>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="upload.html">Upload Notes</a>
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="upload-container">
+        <div class="upload-box">
+            <h1>Upload New Notes</h1>
+            <p class="welcome-text">Welcome, <span id="userName">Student</span>!</p>
+
+            <form id="uploadForm" class="upload-form">
+                <div class="form-group">
+                    <label for="noteTitle">Title *</label>
+                    <input type="text" id="noteTitle" placeholder="e.g., Data Structures - Linked Lists" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteSubject">Subject *</label>
+                    <input type="text" id="noteSubject" placeholder="e.g., Data Structures" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="noteSemester">Semester *</label>
+                        <select id="noteSemester" required>
+              <option value="">Select Semester</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="noteUnit">Unit *</label>
+                        <input type="text" id="noteUnit" placeholder="e.g., Unit 1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteDescription">Description</label>
+                    <textarea id="noteDescription" rows="4" placeholder="Brief description of the notes..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteFile">Upload PDF File *</label>
+                    <input type="file" id="noteFile" accept=".pdf" required>
+                    <small>Only PDF files are allowed (Max 10MB)</small>
+                </div>
+
+                <button type="submit" class="btn-primary btn-large">Upload Notes</button>
+
+                <p class="message" id="uploadMessage"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load Supabase JS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Load our JavaScript files -->
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/upload-notes.js"></script>
+</body>
+
+</html>
