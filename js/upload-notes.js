@@ -17,6 +17,18 @@ let currentUser = null;
     if (profile) {
         document.getElementById('userName').textContent = profile.full_name;
 
+        // Update navbar user info
+        const userNameNav = document.getElementById('userNameNav');
+        const userAvatar = document.getElementById('userAvatar');
+
+        if (userNameNav) {
+            userNameNav.textContent = profile.full_name.split(' ')[0]; // First name only
+        }
+
+        if (userAvatar) {
+            userAvatar.textContent = profile.full_name.charAt(0).toUpperCase(); // First letter
+        }
+
         // Auto-select user's branch if available
         if (profile.branch) {
             document.getElementById('noteBranch').value = profile.branch;
@@ -125,3 +137,40 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         messageEl.style.color = 'red';
     }
 });
+
+// ================================================
+// NAVBAR FUNCTIONALITY
+// ================================================
+(function initNavbar() {
+    // Mobile hamburger menu toggle
+    const hamburger = document.getElementById('navHamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    // Close mobile menu when clicking nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
+
+    // Update user name and avatar in navbar (already done in main init)
+    // Mobile user dropdown toggle
+    const navUser = document.querySelector('.nav-user');
+    const navUserBtn = document.querySelector('.nav-user-btn');
+
+    if (navUserBtn && window.innerWidth <= 768) {
+        navUserBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navUser.classList.toggle('active');
+        });
+    }
+})();

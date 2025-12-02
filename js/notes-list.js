@@ -210,6 +210,9 @@ function setupFilters() {
     // Clear filters button
     document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
 
+    // Close sidebar button (mobile)
+    document.getElementById('closeSidebarBtn').addEventListener('click', closeSidebar);
+
     // Mobile filter toggle
     const mobileFilterToggle = document.getElementById('mobileFilterToggle');
     const filterSidebar = document.querySelector('.filter-sidebar');
@@ -374,3 +377,63 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ================================================
+// NAVBAR FUNCTIONALITY
+// ================================================
+(function initNavbar() {
+    // Mobile hamburger menu toggle
+    const hamburger = document.getElementById('navHamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    // Close mobile menu when clicking nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
+
+    // Update user name and avatar in navbar
+    if (currentUser) {
+        supabaseClient
+            .from('profiles')
+            .select('full_name')
+            .eq('id', currentUser.id)
+            .single()
+            .then(function(response) {
+                if (response.data) {
+                    const userName = response.data.full_name;
+                    const userNameEl = document.getElementById('userName');
+                    const userAvatar = document.getElementById('userAvatar');
+
+                    if (userNameEl) {
+                        userNameEl.textContent = userName.split(' ')[0]; // First name only
+                    }
+
+                    if (userAvatar) {
+                        userAvatar.textContent = userName.charAt(0).toUpperCase(); // First letter
+                    }
+                }
+            });
+    }
+
+    // Mobile user dropdown toggle
+    const navUser = document.querySelector('.nav-user');
+    const navUserBtn = document.querySelector('.nav-user-btn');
+
+    if (navUserBtn && window.innerWidth <= 768) {
+        navUserBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navUser.classList.toggle('active');
+        });
+    }
+})();

@@ -9,15 +9,54 @@
 </head>
 
 <body>
-    <!-- Navigation Bar -->
+    <!-- Modern Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
-            <h2>📚 College Notes Platform</h2>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="upload.html" class="btn-primary">Upload Notes</a>
-                <button id="logoutBtn" class="btn-secondary">Logout</button>
-            </div>
+            <!-- Brand Logo -->
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">📚</span>
+                <span>College Notes</span>
+            </a>
+
+            <!-- Hamburger Menu (Mobile) -->
+            <button class="nav-hamburger" id="navHamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">
+                        <span>🏠</span>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="upload.html" class="nav-link nav-link-primary">
+                        <span>📤</span>
+                        <span>Upload Notes</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-user">
+                    <div class="nav-user-btn">
+                        <div class="nav-user-avatar" id="userAvatar">U</div>
+                        <span id="userName">User</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-dropdown-item">
+                            <span>👤</span>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#" class="nav-dropdown-item" id="logoutBtn">
+                            <span>🚪</span>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
         </div>
     </nav>
 
@@ -50,7 +89,10 @@
         <aside class="filter-sidebar">
             <div class="filter-header">
                 <h3>🔍 Filters</h3>
-                <button id="clearFilters" class="btn-clear">Clear All</button>
+                <div class="filter-header-buttons">
+                    <button id="closeSidebarBtn" class="btn-close-sidebar">✖</button>
+                    <button id="clearFilters" class="btn-clear">Clear All</button>
+                </div>
             </div>
 
             <!-- Search Box -->
