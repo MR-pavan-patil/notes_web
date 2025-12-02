@@ -16,42 +16,150 @@
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="upload.html" class="btn-primary">Upload Notes</a>
-                <a href="login.html" id="authLink">Login</a>
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="hero-content">
-            <h1>Welcome to College Notes Platform</h1>
-            <p>Share and access study materials with your fellow students</p>
+    <!-- Stats Banner -->
+    <div class="stats-banner">
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3 id="totalNotes">0</h3>
+                <p>Total Notes</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalBranches">0</h3>
+                <p>Courses</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="userUploads">0</h3>
+                <p>Your Uploads</p>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content Container -->
-    <div class="container">
-        <!-- Section Header -->
-        <div class="section-header">
-            <h2>📖 All Notes</h2>
-            <p id="notesCount">Loading notes...</p>
-        </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Mobile Filter Toggle Button (Shows only on mobile) -->
+        <button id="mobileFilterToggle" class="mobile-filter-btn">
+      🔍 Show Filters
+    </button>
 
-        <!-- Loading Indicator -->
-        <div id="loadingIndicator" class="loading">
-            <p>⏳ Loading notes...</p>
-        </div>
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <div class="filter-header">
+                <h3>🔍 Filters</h3>
+                <button id="clearFilters" class="btn-clear">Clear All</button>
+            </div>
 
-        <!-- Notes Grid - Cards will be inserted here by JavaScript -->
-        <div id="notesGrid" class="notes-grid">
-            <!-- Cards will be dynamically added here -->
-        </div>
+            <!-- Search Box -->
+            <div class="filter-section">
+                <label>Search Notes</label>
+                <input type="text" id="searchInput" placeholder="Search by title or subject..." class="search-input">
+            </div>
 
-        <!-- Empty State - Shows when no notes exist -->
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <p>📚 No notes uploaded yet.</p>
-            <p>Be the first to share your notes!</p>
-            <a href="upload.html" class="btn-primary">Upload Notes</a>
+            <!-- Course Filter -->
+            <div class="filter-section">
+                <label>Course/Branch</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="BCA">
+            <span>BCA</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="BCom">
+            <span>BCom</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="BA">
+            <span>BA</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="BSc">
+            <span>BSc</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="BBA">
+            <span>BBA</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="course-filter" value="MBA">
+            <span>MBA</span>
+          </label>
+                </div>
+            </div>
+
+            <!-- Semester Filter -->
+            <div class="filter-section">
+                <label>Semester</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="1">
+            <span>Semester 1</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="2">
+            <span>Semester 2</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="3">
+            <span>Semester 3</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="4">
+            <span>Semester 4</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="5">
+            <span>Semester 5</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="6">
+            <span>Semester 6</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="7">
+            <span>Semester 7</span>
+          </label>
+                    <label class="checkbox-label">
+            <input type="checkbox" class="semester-filter" value="8">
+            <span>Semester 8</span>
+          </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Notes Container -->
+        <div class="notes-container">
+            <!-- Active Filters Display -->
+            <div id="activeFilters" class="active-filters" style="display: none;">
+                <span class="filter-label">Active Filters:</span>
+                <div id="filterChips"></div>
+            </div>
+
+            <!-- Results Header -->
+            <div class="results-header">
+                <h2 id="resultsTitle">All Notes</h2>
+                <p id="resultsCount">Loading...</p>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading">
+                <p>⏳ Loading notes...</p>
+            </div>
+
+            <!-- Notes Grid -->
+            <div id="notesGrid" class="notes-grid">
+                <!-- Cards will be dynamically added here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>📚 No notes found</p>
+                <p>Try adjusting your filters or be the first to upload!</p>
+                <a href="upload.html" class="btn-primary">Upload Notes</a>
+            </div>
         </div>
     </div>
 

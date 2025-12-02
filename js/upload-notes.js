@@ -10,12 +10,22 @@ let currentUser = null;
     // Display user name
     const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('full_name')
+        .select('full_name, branch, semester')
         .eq('id', currentUser.id)
         .single();
 
     if (profile) {
         document.getElementById('userName').textContent = profile.full_name;
+
+        // Auto-select user's branch if available
+        if (profile.branch) {
+            document.getElementById('noteBranch').value = profile.branch;
+        }
+
+        // Auto-select user's semester if available
+        if (profile.semester) {
+            document.getElementById('noteSemester').value = profile.semester;
+        }
     }
 })();
 
@@ -32,6 +42,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     // Get form values
     const title = document.getElementById('noteTitle').value.trim();
     const subject = document.getElementById('noteSubject').value.trim();
+    const branch = document.getElementById('noteBranch').value;
     const semester = parseInt(document.getElementById('noteSemester').value);
     const unit = document.getElementById('noteUnit').value.trim();
     const description = document.getElementById('noteDescription').value.trim();
@@ -67,7 +78,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         // Step 1: Upload file to Supabase Storage
         const fileExt = file.name.split('.').pop();
         const fileName = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + fileExt;
-        const filePath = 'semester-' + semester + '/' + subject.replace(/\s+/g, '-').toLowerCase() + '/' + fileName;
+        const filePath = branch.toLowerCase() + '/semester-' + semester + '/' + subject.replace(/\s+/g, '-').toLowerCase() + '/' + fileName;
 
         const { data: uploadData, error: uploadError } = await supabaseClient.storage
             .from('notes-files')
@@ -83,6 +94,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
             .insert([{
                 title: title,
                 subject: subject,
+                branch: branch,
                 semester: semester,
                 unit: unit,
                 description: description,

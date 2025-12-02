@@ -1,40 +1,39 @@
 // js/notes-list.js
 
-// ================================================
-// CHECK IF USER IS LOGGED IN (FOR AUTH LINK)
-// ================================================
-(async function checkAuthStatus() {
-    const user = await getCurrentUser();
-    const authLink = document.getElementById('authLink');
+let allNotes = []; // Store all notes
+let filteredNotes = []; // Store filtered notes
+let currentUser = null;
 
-    if (user) {
-        // User is logged in - show Logout link
-        authLink.textContent = 'Logout';
-        authLink.href = '#';
-        authLink.addEventListener('click', async function(e) {
-            e.preventDefault();
-            await logout();
-            window.location.reload();
-        });
-    } else {
-        // User is not logged in - show Login link
-        authLink.textContent = 'Login';
-        authLink.href = 'login.html';
-    }
+// ================================================
+// REQUIRE LOGIN TO VIEW THIS PAGE
+// ================================================
+(async function initPage() {
+    // Redirect to login if not authenticated
+    currentUser = await requireAuth();
+
+    // Load notes
+    await loadNotes();
+
+    // Setup filter listeners
+    setupFilters();
 })();
 
 // ================================================
-// FETCH AND DISPLAY ALL NOTES
+// LOGOUT BUTTON
+// ================================================
+document.getElementById('logoutBtn').addEventListener('click', async function() {
+    await logout();
+    window.location.href = 'login.html';
+});
+
+// ================================================
+// LOAD ALL NOTES FROM DATABASE
 // ================================================
 async function loadNotes() {
     const loadingIndicator = document.getElementById('loadingIndicator');
-    const notesGrid = document.getElementById('notesGrid');
-    const emptyState = document.getElementById('emptyState');
-    const notesCount = document.getElementById('notesCount');
 
     try {
-        // Fetch all notes from database, ordered by newest first
-        // Also fetch the uploader's profile info using JOIN
+        // Fetch all notes with uploader info
         const { data: notes, error } = await supabaseClient
             .from('notes')
             .select(`
@@ -48,24 +47,18 @@ async function loadNotes() {
 
         if (error) throw error;
 
-        // Hide loading indicator
+        // Store notes globally
+        allNotes = notes || [];
+        filteredNotes = allNotes;
+
+        // Hide loading
         loadingIndicator.style.display = 'none';
 
-        // Check if there are any notes
-        if (!notes || notes.length === 0) {
-            emptyState.style.display = 'block';
-            notesCount.textContent = 'No notes available';
-            return;
-        }
+        // Update stats
+        updateStats();
 
-        // Update count
-        notesCount.textContent = notes.length + ' note(s) available';
-
-        // Display each note as a card
-        notes.forEach(function(note) {
-            const card = createNoteCard(note);
-            notesGrid.appendChild(card);
-        });
+        // Display notes
+        displayNotes();
 
     } catch (error) {
         console.error('Error loading notes:', error);
@@ -74,14 +67,58 @@ async function loadNotes() {
 }
 
 // ================================================
-// CREATE A NOTE CARD (HTML ELEMENT)
+// UPDATE STATISTICS
+// ================================================
+function updateStats() {
+    // Total notes
+    document.getElementById('totalNotes').textContent = allNotes.length;
+
+    // Unique branches
+    const uniqueBranches = new Set(allNotes.map(note => note.branch));
+    document.getElementById('totalBranches').textContent = uniqueBranches.size;
+
+    // User's uploads
+    const userNotes = allNotes.filter(note => note.uploaded_by === currentUser.id);
+    document.getElementById('userUploads').textContent = userNotes.length;
+}
+
+// ================================================
+// DISPLAY NOTES IN GRID
+// ================================================
+function displayNotes() {
+    const notesGrid = document.getElementById('notesGrid');
+    const emptyState = document.getElementById('emptyState');
+    const resultsCount = document.getElementById('resultsCount');
+
+    // Clear grid
+    notesGrid.innerHTML = '';
+
+    // Check if empty
+    if (filteredNotes.length === 0) {
+        emptyState.style.display = 'block';
+        resultsCount.textContent = 'No notes found';
+        return;
+    }
+
+    // Hide empty state
+    emptyState.style.display = 'none';
+    resultsCount.textContent = filteredNotes.length + ' note(s) found';
+
+    // Create cards
+    filteredNotes.forEach(function(note) {
+        const card = createNoteCard(note);
+        notesGrid.appendChild(card);
+    });
+}
+
+// ================================================
+// CREATE NOTE CARD
 // ================================================
 function createNoteCard(note) {
-    // Create card container
     const card = document.createElement('div');
     card.className = 'note-card';
 
-    // Format date to readable format
+    // Format date
     const date = new Date(note.created_at);
     const formattedDate = date.toLocaleDateString('en-IN', {
         year: 'numeric',
@@ -89,22 +126,39 @@ function createNoteCard(note) {
         day: 'numeric'
     });
 
-    // Get uploader name (if available)
+    // Uploader info
     const uploaderName = note.profiles ? note.profiles.full_name : 'Unknown';
     const uploaderBranch = note.profiles ? note.profiles.branch : '';
 
-    // Get public URL for the PDF file
+    // Get public URL
     const { data: urlData } = supabaseClient.storage
         .from('notes-files')
         .getPublicUrl(note.file_path);
 
     const fileUrl = urlData.publicUrl;
 
-    // Build card HTML with beautiful design
+    // Branch colors
+    const branchColors = {
+        'BCA': '#667eea',
+        'BCom': '#f093fb',
+        'BA': '#4facfe',
+        'BSc': '#43e97b',
+        'BBA': '#fa709a',
+        'MBA': '#ff6b6b'
+    };
+
+    const branchColor = branchColors[note.branch] || '#667eea';
+
+    // Build card
     card.innerHTML = `
-    <div class="card-header">
-      <h3>${escapeHtml(note.title)}</h3>
-      <span class="semester-badge">Sem ${note.semester}</span>
+    <div class="card-header" style="background: linear-gradient(135deg, ${branchColor} 0%, ${branchColor}dd 100%);">
+      <div class="card-header-content">
+        <h3>${escapeHtml(note.title)}</h3>
+        <div class="card-badges">
+          <span class="branch-badge">${escapeHtml(note.branch)}</span>
+          <span class="semester-badge">Sem ${note.semester}</span>
+        </div>
+      </div>
     </div>
     
     <div class="card-body">
@@ -125,7 +179,7 @@ function createNoteCard(note) {
         <span class="date">📅 ${formattedDate}</span>
       </div>
       <a href="${fileUrl}" target="_blank" class="btn-download">
-        📥 View / Download PDF
+        📥 Download PDF
       </a>
     </div>
   `;
@@ -134,15 +188,189 @@ function createNoteCard(note) {
 }
 
 // ================================================
-// HELPER: ESCAPE HTML TO PREVENT XSS ATTACKS
+// SETUP FILTERS
+// ================================================
+function setupFilters() {
+    // Search input
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', applyFilters);
+
+    // Course checkboxes
+    const courseFilters = document.querySelectorAll('.course-filter');
+    courseFilters.forEach(function(checkbox) {
+        checkbox.addEventListener('change', applyFilters);
+    });
+
+    // Semester checkboxes
+    const semesterFilters = document.querySelectorAll('.semester-filter');
+    semesterFilters.forEach(function(checkbox) {
+        checkbox.addEventListener('change', applyFilters);
+    });
+
+    // Clear filters button
+    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+
+    // Mobile filter toggle
+    const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+    const filterSidebar = document.querySelector('.filter-sidebar');
+
+    // Function to close sidebar
+    function closeSidebar() {
+        filterSidebar.classList.remove('mobile-active');
+        mobileFilterToggle.textContent = '🔍 Show Filters';
+        document.body.style.overflow = '';
+
+        // Remove backdrop if exists
+        const backdrop = document.querySelector('.filter-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+    }
+
+    // Function to open sidebar
+    function openSidebar() {
+        filterSidebar.classList.add('mobile-active');
+        mobileFilterToggle.textContent = '✖ Hide Filters';
+        document.body.style.overflow = 'hidden';
+
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'filter-backdrop';
+        document.body.appendChild(backdrop);
+
+        // Close when clicking backdrop
+        backdrop.addEventListener('click', closeSidebar);
+    }
+
+    // Toggle filter sidebar
+    mobileFilterToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+
+        if (filterSidebar.classList.contains('mobile-active')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    // Prevent closing when clicking inside sidebar
+    filterSidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// ================================================
+// APPLY FILTERS
+// ================================================
+function applyFilters() {
+    // Get search term
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+    // Get selected courses
+    const selectedCourses = [];
+    document.querySelectorAll('.course-filter:checked').forEach(function(checkbox) {
+        selectedCourses.push(checkbox.value);
+    });
+
+    // Get selected semesters
+    const selectedSemesters = [];
+    document.querySelectorAll('.semester-filter:checked').forEach(function(checkbox) {
+        selectedSemesters.push(parseInt(checkbox.value));
+    });
+
+    // Filter notes
+    filteredNotes = allNotes.filter(function(note) {
+        // Search filter
+        const matchesSearch = !searchTerm ||
+            note.title.toLowerCase().includes(searchTerm) ||
+            note.subject.toLowerCase().includes(searchTerm);
+
+        // Course filter
+        const matchesCourse = selectedCourses.length === 0 ||
+            selectedCourses.includes(note.branch);
+
+        // Semester filter
+        const matchesSemester = selectedSemesters.length === 0 ||
+            selectedSemesters.includes(note.semester);
+
+        return matchesSearch && matchesCourse && matchesSemester;
+    });
+
+    // Update active filters display
+    updateActiveFilters(searchTerm, selectedCourses, selectedSemesters);
+
+    // Display filtered results
+    displayNotes();
+}
+
+// ================================================
+// UPDATE ACTIVE FILTERS CHIPS
+// ================================================
+function updateActiveFilters(searchTerm, courses, semesters) {
+    const activeFiltersDiv = document.getElementById('activeFilters');
+    const filterChips = document.getElementById('filterChips');
+
+    // Clear chips
+    filterChips.innerHTML = '';
+
+    let hasFilters = false;
+
+    // Search chip
+    if (searchTerm) {
+        hasFilters = true;
+        const chip = document.createElement('span');
+        chip.className = 'filter-chip';
+        chip.textContent = '🔍 "' + searchTerm + '"';
+        filterChips.appendChild(chip);
+    }
+
+    // Course chips
+    courses.forEach(function(course) {
+        hasFilters = true;
+        const chip = document.createElement('span');
+        chip.className = 'filter-chip';
+        chip.textContent = course;
+        filterChips.appendChild(chip);
+    });
+
+    // Semester chips
+    semesters.forEach(function(sem) {
+        hasFilters = true;
+        const chip = document.createElement('span');
+        chip.className = 'filter-chip';
+        chip.textContent = 'Sem ' + sem;
+        filterChips.appendChild(chip);
+    });
+
+    // Show/hide active filters
+    activeFiltersDiv.style.display = hasFilters ? 'flex' : 'none';
+}
+
+// ================================================
+// CLEAR ALL FILTERS
+// ================================================
+function clearAllFilters() {
+    // Clear search
+    document.getElementById('searchInput').value = '';
+
+    // Uncheck all checkboxes
+    document.querySelectorAll('.course-filter, .semester-filter').forEach(function(checkbox) {
+        checkbox.checked = false;
+    });
+
+    // Reset filtered notes
+    filteredNotes = allNotes;
+
+    // Update display
+    updateActiveFilters('', [], []);
+    displayNotes();
+}
+
+// ================================================
+// ESCAPE HTML
 // ================================================
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-// ================================================
-// LOAD NOTES WHEN PAGE LOADS
-// ================================================
-window.addEventListener('DOMContentLoaded', loadNotes);
