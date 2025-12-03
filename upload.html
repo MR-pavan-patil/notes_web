@@ -12,20 +12,17 @@
     <!-- Modern Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
-            <!-- Brand Logo -->
             <a href="index.html" class="nav-brand">
                 <span class="nav-icon">📚</span>
                 <span>College Notes</span>
             </a>
 
-            <!-- Hamburger Menu (Mobile) -->
             <button class="nav-hamburger" id="navHamburger">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-            <!-- Navigation Menu -->
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-item">
                     <a href="index.html" class="nav-link">
@@ -42,7 +39,7 @@
                 <li class="nav-item nav-user">
                     <div class="nav-user-btn">
                         <div class="nav-user-avatar" id="userAvatar">U</div>
-                        <span id="userNameNav">User</span>
+                        <span class="nav-user-name" id="userNameNav">User</span>
                         <span>▼</span>
                     </div>
                     <div class="nav-dropdown">
@@ -60,38 +57,74 @@
         </div>
     </nav>
 
+    <!-- Upload Hero Section -->
+    <div class="upload-hero">
+        <div class="upload-hero-content">
+            <div class="upload-icon-large">📤</div>
+            <h1>Upload Your Notes</h1>
+            <p>Share your knowledge with fellow students</p>
+        </div>
+    </div>
+
+    <!-- Upload Form Section -->
     <div class="upload-container">
         <div class="upload-box">
-            <h1>Upload New Notes</h1>
-            <p class="welcome-text">Welcome, <span id="userName">Student</span>!</p>
+            <!-- Welcome Message -->
+            <div class="upload-welcome">
+                <div class="welcome-avatar" id="welcomeAvatar">U</div>
+                <div class="welcome-text">
+                    <h2>Welcome back, <span id="userName">Student</span>! 👋</h2>
+                    <p>Ready to share some awesome notes?</p>
+                </div>
+            </div>
 
+            <!-- Upload Form -->
             <form id="uploadForm" class="upload-form">
+                <!-- Title -->
                 <div class="form-group">
-                    <label for="noteTitle">Title *</label>
-                    <input type="text" id="noteTitle" placeholder="e.g., Data Structures - Linked Lists" required>
+                    <label for="noteTitle">
+            <span class="label-icon">📝</span>
+            <span class="label-text">Title</span>
+            <span class="label-required">*</span>
+          </label>
+                    <input type="text" id="noteTitle" placeholder="e.g., Data Structures - Linked Lists" required autocomplete="off">
                 </div>
 
+                <!-- Subject -->
                 <div class="form-group">
-                    <label for="noteSubject">Subject *</label>
-                    <input type="text" id="noteSubject" placeholder="e.g., Data Structures" required>
+                    <label for="noteSubject">
+            <span class="label-icon">📖</span>
+            <span class="label-text">Subject</span>
+            <span class="label-required">*</span>
+          </label>
+                    <input type="text" id="noteSubject" placeholder="e.g., Data Structures" required autocomplete="off">
                 </div>
 
+                <!-- Course and Semester Row -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="noteBranch">Course/Branch *</label>
+                        <label for="noteBranch">
+              <span class="label-icon">🎓</span>
+              <span class="label-text">Course</span>
+              <span class="label-required">*</span>
+            </label>
                         <select id="noteBranch" required>
               <option value="">Select Course</option>
-              <option value="BCA">BCA - Bachelor of Computer Applications</option>
-              <option value="BCom">BCom - Bachelor of Commerce</option>
-              <option value="BA">BA - Bachelor of Arts</option>
-              <option value="BSc">BSc - Bachelor of Science</option>
-              <option value="BBA">BBA - Bachelor of Business Administration</option>
-              <option value="MBA">MBA - Master of Business Administration</option>
+              <option value="BCA">BCA</option>
+              <option value="BCom">BCom</option>
+              <option value="BA">BA</option>
+              <option value="BSc">BSc</option>
+              <option value="BBA">BBA</option>
+              <option value="MBA">MBA</option>
             </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="noteSemester">Semester *</label>
+                        <label for="noteSemester">
+              <span class="label-icon">📅</span>
+              <span class="label-text">Semester</span>
+              <span class="label-required">*</span>
+            </label>
                         <select id="noteSemester" required>
               <option value="">Select Semester</option>
               <option value="1">Semester 1</option>
@@ -106,26 +139,74 @@
                     </div>
                 </div>
 
+                <!-- Unit -->
                 <div class="form-group">
-                    <label for="noteUnit">Unit *</label>
-                    <input type="text" id="noteUnit" placeholder="e.g., Unit 1" required>
+                    <label for="noteUnit">
+            <span class="label-icon">📑</span>
+            <span class="label-text">Unit</span>
+            <span class="label-required">*</span>
+          </label>
+                    <input type="text" id="noteUnit" placeholder="e.g., Unit 1, Unit 2, etc." required autocomplete="off">
                 </div>
 
+                <!-- Description -->
                 <div class="form-group">
-                    <label for="noteDescription">Description</label>
-                    <textarea id="noteDescription" rows="4" placeholder="Brief description of the notes..."></textarea>
+                    <label for="noteDescription">
+            <span class="label-icon">✍️</span>
+            <span class="label-text">Description</span>
+            <span class="label-optional">(Optional)</span>
+          </label>
+                    <textarea id="noteDescription" rows="4" placeholder="Brief description of the notes content..."></textarea>
+                    <small class="field-hint">Help others understand what's covered in these notes</small>
                 </div>
 
+                <!-- File Upload -->
                 <div class="form-group">
-                    <label for="noteFile">Upload PDF File *</label>
-                    <input type="file" id="noteFile" accept=".pdf" required>
-                    <small>Only PDF files are allowed (Max 10MB)</small>
+                    <label for="noteFile">
+            <span class="label-icon">📄</span>
+            <span class="label-text">Upload PDF File</span>
+            <span class="label-required">*</span>
+          </label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="noteFile" accept=".pdf" required hidden>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="file-upload-icon">📎</div>
+                            <div class="file-upload-text">
+                                <p class="file-upload-title">Click to browse or drag & drop</p>
+                                <p class="file-upload-subtitle">PDF files only • Max 10MB</p>
+                            </div>
+                        </div>
+                        <div class="file-selected" id="fileSelected" style="display: none;">
+                            <div class="file-selected-icon">✅</div>
+                            <div class="file-selected-info">
+                                <p class="file-selected-name" id="fileName"></p>
+                                <p class="file-selected-size" id="fileSize"></p>
+                            </div>
+                            <button type="button" class="file-remove-btn" id="fileRemoveBtn">✖</button>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-primary btn-large">Upload Notes</button>
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit-upload">
+          <span class="btn-icon">🚀</span>
+          <span class="btn-text">Upload Notes</span>
+        </button>
 
+                <!-- Message -->
                 <p class="message" id="uploadMessage"></p>
             </form>
+
+            <!-- Tips Section -->
+            <div class="upload-tips">
+                <h3>📌 Tips for Better Notes</h3>
+                <ul>
+                    <li>✅ Use clear and descriptive titles</li>
+                    <li>✅ Ensure PDF is readable and well-organized</li>
+                    <li>✅ Add a helpful description</li>
+                    <li>✅ Double-check course and semester details</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -136,6 +217,65 @@
     <script src="js/supabaseClient.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/upload-notes.js"></script>
+
+    <script>
+        // File upload interactions
+        const fileInput = document.getElementById('noteFile');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileSelected = document.getElementById('fileSelected');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const fileRemoveBtn = document.getElementById('fileRemoveBtn');
+
+        // Click to select file
+        fileUploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // File selected
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                displaySelectedFile(file);
+            }
+        });
+
+        // Drag and drop
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('drag-over');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('drag-over');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                fileInput.files = e.dataTransfer.files;
+                displaySelectedFile(file);
+            }
+        });
+
+        // Display selected file
+        function displaySelectedFile(file) {
+            fileName.textContent = file.name;
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            fileSize.textContent = `${sizeMB} MB`;
+            fileUploadArea.style.display = 'none';
+            fileSelected.style.display = 'flex';
+        }
+
+        // Remove file
+        fileRemoveBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            fileUploadArea.style.display = 'flex';
+            fileSelected.style.display = 'none';
+        });
+    </script>
 </body>
 
 </html>
