@@ -107,7 +107,7 @@ if (document.getElementById('loginForm')) {
 
             // Redirect to upload page after successful login
             setTimeout(() => {
-                window.location.href = 'upload.html';
+                window.location.href = 'index.html';
             }, 1000);
         } else {
             messageEl.textContent = result.message;
